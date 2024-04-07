@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="Scripts/scripts.js"></script>
+  <link rel="stylesheet" type="text/css" href="Styles/reset.css">
+  <link rel="stylesheet" type="text/css" href="Styles/fonts.css">
+  <link rel="stylesheet" type="text/css" href="Styles/global.css">
+  <link rel="stylesheet" type="text/css" href="Styles/styles.css">
+
+  <title>API</title>
+</head>
+
+<body>
+  <header class="header-container">
+
+    <h1>English Soccer Hub API</h1>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #0496c7;" id="navBar">
+
+      <div>
+        <select class="navbar-nav me-auto mb-2 mb-lg-0"  style="background-color: #0496c7;" id="newsTypeSelection" onchange="newsTypeChanged()">
+          <option class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </option>
+          <option class="nav-item">
+            <a class="nav-link" href="#">Arsenal FC</a>
+          </option>
+
+          <option class="nav-item">
+            <a class="nav-link" href="#" style="color: aliceblue;">Chelsea FC</a>
+          </option>
+          
+          <option class="nav-item">
+            <a class="nav-link" href="#">Liverpool FC</a>
+          </option>
+
+          <option class="nav-item">
+            <a class="nav-link" href="#">Manchester City FC</a>
+          </option>
+
+          <option class="nav-item">
+            <a class="nav-link" href="#">Manchester United FC</a>
+          </option>
+
+          <option class="nav-item">
+            <a class="nav-link" href="#">Tottenham Hotspur FC</a>
+          </option>
+
+          <option class="nav-item">
+            <a class="nav-link" href="#">Everton FC</a>
+          </option>
+
+          <option class="nav-item">
+            <a class="nav-link" href="#">West Ham United FC</a>
+          </option>
+
+          <option class="nav-item">
+            <a class="nav-link" href="#">Aston Villa FC</a>
+            </option>
+
+            <option class="nav-item">
+              <a class="nav-link" href="#">Newcastle United FC</a>
+              </option>
+            </li>
+        </select>
+      </div>
+
+    </nav>
+
+
+  </header>
+  <div class="container">
+    <h2>Welcome to English Soccer Hub API (<span id="resultCount"></span> Results)</h2>
+
+
+
+    <div class="row-container" id="news-container"></div>
+
+    <div class="d-flex justify-content-around">
+      <button class="btn btn-primary">
+        < Previous Page</button>
+          <button class="btn btn-primary">Next Page ></button>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+
+  <script>
+
+    let selectedValue;
+
+    async function newsTypeChanged() {
+      const newsTypeElement = document.getElementById("newsTypeSelection")
+      const newsContainer = document.getElementById("news-container")
+
+      selectedValue = newsTypeElement.value
+
+      console.log("Fetching news...");
+
+      var url = 'https://newsapi.org/v2/everything?' +
+        'q=' + selectedValue + '&' +
+        'from=2024-03-07&' +
+        'pageSize=10&' +
+        'sortBy=popularity&' +
+        'apiKey=d12c95bd90e642b8b0e5ad16df5a744e'
+
+      // fetching data from the api
+      const response = await fetch(url)
+
+      // using json format to process the data
+      const data = await response.json()
+
+      // getting the articles from the data
+      const articles = data.articles
+
+      // news container previously may contain elements, 
+      //such as articles from Arsenal, Chelsea etc
+      // so it's necessary to clear news-container before updating it with new articles
+
+      newsContainer.innerHTML = ""
+
+      // after this, it's cleared
+
+      // articles is a list of article
+
+      // articles.forEach(article => { loops through every article within the list of articles
+
+      articles.forEach(article => {
+
+        // the line creates a new element <div></div>
+        const articleElement = document.createElement('div');
+
+        // the line updates the previously created <div> element to be 
+        // <div class="row-container"></div>
+        articleElement.classList.add('row-container');
+
+        // the following sets the inner html of the component
+
+
+        //result
+
+        // <div class="row-container">
+        // <img the image/>
+        // title
+        //description
+        // </div>
+        articleElement.innerHTML = `
+        <div class="card my-4 mx-2" style="width: 18rem;">
+            <img src="${article.urlToImage}" class="card-img-top" alt="...">
+            <div class="card-body">
+              <div style="height: 220px;">
+                <h5 class="card-title">${article.title}</h5>
+                <p class="card-text">${article.description}</p>
+                </div>
+                <a href="${article.url}" class="btn btn-primary">Read More</a>
+            </div>
+        </div>`;
+        newsContainer.appendChild(articleElement);
+      });
+    }
+  </script>
+</body>
+
+</html>
